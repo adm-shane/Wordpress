@@ -1,0 +1,36 @@
+If the containers deploy but you have the error where the url states connection to db failed, it is because the user account and permissions are not getting assigned.
+
+To troubleshoot, start with the following
+
+Mariadb user account creation
+		docker exec -it 9128a7bec979 bash
+			mysql -h db -u root -p
+				MelissaShane1980861!
+				SELECT User, Host FROM mysql.user;
+					MariaDB [(none)]> SELECT User, Host FROM mysql.user;
++-------------+-----------+
+| User        |        Host      |
++-------------+-----------+
+| adm-shane   | %            |
+| root              | %            |
+| wordpress    | %            |
+| healthcheck | 127.0.0.1 |
+| healthcheck | ::1            |
+| healthcheck | localhost |
+| mariadb.sys | localhost |
+| root             | localhost |
++-------------+-----------+
+8 rows in set (0.012 sec)
+
+CREATE USER 'adm-shane'@'%' IDENTIFIED BY 'MelissaShane1980861!';
+GRANT ALL PRIVILEGES ON wordpress.* TO 'adm-shane'@'%';
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'adm-shane'@'%';
+GRANT ALL PRIVILEGES ON `wordpress`.* TO 'adm-shane'@'%'
+EXIT;
+GRANT ALL PRIVILEGES ON `wordpress`.* TO 'adm-shane'@'%' 
+EXIT;
+SELECT User, Host FROM mysql.user;
+exit
+
+Restart Containers.
