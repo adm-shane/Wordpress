@@ -1,0 +1,31 @@
+Docker Compose YAML
+	
+services:
+  db:
+    image: mariadb:latest
+    volumes:
+      - ./db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234567890"
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: Administrator
+      MYSQL_PASSWORD: "1234567890"
+  
+  wordpress:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - "8000:80"
+    restart: always
+    volumes:
+      - wp_data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: Administrator
+      WORDPRESS_DB_PASSWORD: "1234567890"
+
+volumes:
+  db_data: {}
+  wp_data: {}
